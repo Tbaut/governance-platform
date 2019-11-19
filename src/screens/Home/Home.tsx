@@ -1,15 +1,16 @@
 import * as React from 'react';
-import { LatestPostsQuery } from '../../generated/graphql';
-import { Link } from 'react-router-dom';
-import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import DiscussionCard from '../../components/DiscussionCard'
+import Row from 'react-bootstrap/Row';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+
+import DiscussionCard from '../../components/DiscussionCard'
+import { LatestPostsQuery } from '../../generated/graphql';
 
 
 interface Props {
-  data: LatestPostsQuery
   className?: string
+  data: LatestPostsQuery
 }
 
 // const className = 'Home';
@@ -62,8 +63,7 @@ const Home = ({ data, className }: Props) => (
                           author={post.author.username}
                           creation_date={post.creation_date}
                           replies={post.replies.length.toString()}
-                        >
-                        </DiscussionCard>
+                        />
                       </Link>}
                     </li>
                   ),

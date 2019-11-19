@@ -1,7 +1,7 @@
-import * as React from 'react'
 import * as moment from 'moment'
-import styled from 'styled-components';
+import * as React from 'react'
 import { FaComment, FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
+import styled from 'styled-components';
 
 const DiscussionCard = styled.div`
     padding: 20px 30px;
@@ -36,18 +36,17 @@ const DiscussionCard = styled.div`
 
 
 export interface DiscussionProps {
-  title: string
   author: string
   creation_date: string
   replies?: string
-  children: React.ReactNode
+  title: string
 } 
 
 export default function Discussion ({
-        title,
         author,
         creation_date,
-        replies
+        replies,
+        title
     }:DiscussionProps) {
 
         return (
