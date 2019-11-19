@@ -55,10 +55,10 @@ const MenuBar: React.FC = () => {
           </>
           }
             
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
-  );
+				</Nav>
+			</Navbar.Collapse>
+		</Navbar>
+	);
 }
 
 export default MenuBar;
