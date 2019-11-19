@@ -10,6 +10,9 @@ export const QUERY_LATEST_POSTS = gql`
             }
             creation_date
             modification_date
+            replies {
+                id
+              }
         }
     }
 `;

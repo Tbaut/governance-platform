@@ -3,40 +3,81 @@ import { LatestPostsQuery } from '../../generated/graphql';
 import { Link } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import * as moment from 'moment';
+import DiscussionCard from '../../components/DiscussionCard'
+import styled from 'styled-components';
 
 
 interface Props {
-  data: LatestPostsQuery;
+  data: LatestPostsQuery
+  className?: string
 }
 
-const className = 'Home';
+// const className = 'Home';
+const Container = styled.div`
+  ul {
+    padding: 0;
+  }
 
-const Home: React.FC<Props> = ({ data }) => (
-  <div className={className}>
+  li {
+    list-style-type: none;
+  }
+
+  h3 {
+    font-family: 'Roboto Mono';
+    font-weight: 500;
+    font-size: 30px;
+    color: #222;
+    margin-bottom: 20px;
+  }
+
+  .Home__item {
+    margin: 0 0 10px 0;
+    border: 1px solid #EEE;
+  }
+
+  .Home__item:hover {
+    border: 1px solid #BBB;
+    text-decoration: none;
+  }
+
+  .Home__item a:hover {
+    text-decoration: none;
+  }
+`;
+
+const Home = ({ data, className }: Props) => (
+  <Container className='Home'>
       <h3>Latest posts</h3>
       <Row>
         <Col md={6} lg={8}>
-          <ul className={`${className}__list`}>
+          <ul className='Home__list'>
             {!!data.posts &&
               data.posts.map(
                 (post) =>
                   !!post && (
-                    <li key={post.id} className={`${className}__item`}>
-                      <Link to={`/post/${post.id}`}>
-                        <li style={{color:"#282828", fontWeight: 500, fontSize: "18px", marginBottom: "5px"}}>{post.title}</li>
-                        <li style={{color:"#555", fontSize: "14px"}}>posted by {post.author.username} ({post.creation_date})</li>
-                      </Link>
+                    <li key={post.id} className='Home__item'>
+                      {<Link to={`/post/${post.id}`}>
+                        <DiscussionCard 
+                          title={post.title}
+                          author={post.author.username}
+                          creation_date={post.creation_date}
+                          replies={post.replies.length.toString()}
+                        >
+                        </DiscussionCard>
+                      </Link>}
                     </li>
                   ),
               )}
           </ul>
         </Col>
         <Col>
-          <h5>Hello</h5>
+          <div>
+            <h5>Hello</h5>
+            <div></div>
+          </div>
         </Col>
       </Row>
-  </div>
+  </Container>
 );
 
 export default Home;

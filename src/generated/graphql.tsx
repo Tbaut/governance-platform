@@ -1842,7 +1842,10 @@ export type LatestPostsQuery = (
     & { author: (
       { __typename?: 'users' }
       & Pick<Users, 'username'>
-    ) }
+    ), replies: Array<(
+      { __typename?: 'replies' }
+      & Pick<Replies, 'id'>
+    )> }
   )> }
 );
 
@@ -1890,6 +1893,9 @@ export const LatestPostsDocument = gql`
     }
     creation_date
     modification_date
+    replies {
+      id
+    }
   }
 }
     `;

@@ -3,6 +3,7 @@ import { useContext, useEffect } from 'react'
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components'
 
 import { UserDetailsContext } from '../../context/UserDetailsContext'
 import { getAuthHeader } from '../../services/auth.service';
@@ -42,7 +43,7 @@ const MenuBar: React.FC = () => {
 
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-      <Navbar.Brand as={Link} to="/">Governance Platform</Navbar.Brand>
+      <Navbar.Brand as={Link} to="/" style={{fontFamily: 'Roboto Mono', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.1em'}}>Governance Platform</Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="ml-auto">

@@ -10,6 +10,8 @@ import MenuBar from './screens/MenuBar';
 import SignupForm from './screens/SignupForm';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import styled from 'styled-components';
+
 
 const App = () => {
   return (
