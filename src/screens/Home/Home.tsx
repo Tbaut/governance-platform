@@ -28,7 +28,7 @@ const Home: React.FC<Props> = ({ data }: Props) =>{
 						(post) =>
 							!!post && (
 								<li key={post.id} className={`${className}__item`}>
-									<Link to={`/post/${post.id}`}>
+									<Link to={`/posts/${post.id}`}>
 										{post.author.username} ({post.creation_date}): {post.title}
 									</Link>
 								</li>

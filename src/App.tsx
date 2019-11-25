@@ -25,11 +25,11 @@ const App = () => {
 						<Route path="/login">
 							<LoginForm/>
 						</Route>
-						<Route exact path="/post/:id" >
-							<Post/>
-						</Route>
 						<Route path="/post/create" >
 							<CreatePost/>
+						</Route>
+						<Route exact path="/posts/:id" >
+							<Post/>
 						</Route>
 						<Route path="/signup">
 							<SignupForm/>
