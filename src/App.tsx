@@ -3,10 +3,11 @@ import Container from 'react-bootstrap/Container'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import { UserDetailsProvider } from './context/UserDetailsContext';
+import CreatePost from './screens/CreatePost';
 import Home from './screens/Home';
-import Post from './screens/Post';
 import LoginForm from './screens/LoginForm';
 import MenuBar from './screens/MenuBar';
+import Post from './screens/Post';
 import SignupForm from './screens/SignupForm';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -26,6 +27,9 @@ const App = () => {
 						</Route>
 						<Route exact path="/post/:id" >
 							<Post/>
+						</Route>
+						<Route path="/post/create" >
+							<CreatePost/>
 						</Route>
 						<Route path="/signup">
 							<SignupForm/>
