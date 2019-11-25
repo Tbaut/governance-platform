@@ -1,9 +1,39 @@
 import * as React from 'react';
-// import { useLatestPostsQuery } from '../../generated/graphql';
+import { useCreatePostMutation } from '../../generated/graphql';
+import Button from 'react-bootstrap/Button';
 
 const CreatePost = () => {
+	const [createPostMutation, { data, loading, error }] = useCreatePostMutation({
+		variables: {
+			cat: 1,
+			content: '',
+			title: '',
+			userId: 1
+		}
+	});
 
-	return <div>Bla</div>;
+	const handleSend = () => {
+		createPostMutation({ variables: {
+			cat: 2,
+			content: 'hophop',
+			title: 'piouf',
+			userId: 1
+		} })
+	}
+
+	if (loading) {
+		return <div>Loading...</div>;
+	}
+
+	if (error) {
+		return <div>ERROR</div>;
+	}
+
+	console.log('data',data)
+
+	return (
+		<Button onClick={handleSend}>Send</Button>
+	);
 };
 
 export default CreatePost;
