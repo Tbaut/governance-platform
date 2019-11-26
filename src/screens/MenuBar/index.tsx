@@ -11,12 +11,7 @@ import parseJwt from '../../util/parseJWT'
 const MenuBar: React.FC = () => {
 	const currentUser = useContext(UserDetailsContext)
 
-	// FIXME we need to use expiring JWT, Cookies for refreshtokens and no localstorage
-	// as explained clearly here https://blog.hasura.io/best-practices-of-using-jwt-with-graphql/
-
-	// effect responsible to get the token from localstorage if any
 	useEffect(() => {
-		console.log('menubar useeffect')
 		if (!currentUser.id){
 			// no user stored in memory
 			// check in the local storage

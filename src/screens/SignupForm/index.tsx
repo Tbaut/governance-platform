@@ -7,9 +7,9 @@ import { UserDetailsContext } from '../../context/UserDetailsContext';
 import { useHistory } from 'react-router-dom';
 
 const SignupForm = (): JSX.Element => {
-	const [email, setEmail] = useState<String | undefined>('');
-	const [username, setUsername] = useState<String | undefined>('');
-	const [password, setPassword] = useState<String | undefined>('');
+	const [email, setEmail] = useState<string | undefined>('');
+	const [username, setUsername] = useState<string | undefined>('');
+	const [password, setPassword] = useState<string | undefined>('');
 	const history = useHistory();
 	const currentUser = useContext(UserDetailsContext)
     

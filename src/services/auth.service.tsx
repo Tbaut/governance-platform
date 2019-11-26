@@ -4,19 +4,64 @@
 // import { MeDocument, MeQuery, MeQueryVariables, useMeQuery, useMeLazyQuery } from '../generated/graphql'
 import { LoginObjectType, SignupObjectType, SignupResponseObjectType, UserDetailsContextType } from '../types'
 // import { UserDetailsContext } from '../context/UserDetailsContext'
+import parseJwt from '../util/parseJWT'
 
 export const storeAuthHeader = (auth: string) => {
 	localStorage.setItem('Authorization', 'Bearer '+auth)
 }
 
 export const getAuthHeader = (): string | null => {
-	return localStorage.getItem('Authorization') || null
+	let token = localStorage.getItem('Authorization') || null;
+
+	if (token) {
+		const tokenPayload = parseJwt(token);
+		const isExpired = tokenPayload.exp < Date.now()/1000
+		
+		// if(isExpired){
+		// 	refreshToken();
+		// }
+
+		// always refresh
+		refreshToken();
+
+	}
+	return token
+}
+
+const refreshToken = (): void => {
+	fetch(`${process.env.REACT_APP_AUTH_SERVER_URL}/token`, {
+		credentials: 'same-origin',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		method: 'POST'
+	})
+		.then(async (response) => {
+			if (response.status < 400 && response.ok) {
+				response.json().then((data) => {
+					console.log('new token',data.token)
+				})
+
+				//   const token = data.token;
+				// storeAuthHeader(token);
+				// return data;
+				// });
+			} else {
+				const error = await response.json()
+					.then((data) => {
+						console.log('Authservice login error',data.errors);
+						return data.errors;
+					})
+				throw new Error(error);
+			}
+		});
 }
 
 export const login = ({ username, password } : LoginObjectType) => {
 
 	return fetch(`${process.env.REACT_APP_AUTH_SERVER_URL}/login`, {
 		body: JSON.stringify({ password, username }),
+		credentials: 'same-origin',
 		headers: {
 			'Content-Type': 'application/json'
 		},
@@ -34,8 +79,8 @@ export const login = ({ username, password } : LoginObjectType) => {
 				// console.log('res.statusText',res.statusText)
 				const error = await response.json()
 					.then((data) => {
-						console.log('Authservice login error',data.error);
-						return data.error;
+						console.error('Authservice login error',data.errors);
+						return data.errors;
 					})
 
 				throw new Error(error);
@@ -49,8 +94,8 @@ export const login = ({ username, password } : LoginObjectType) => {
 export const signUp = (SignupData: SignupObjectType) => {
 	return fetch(`${process.env.REACT_APP_AUTH_SERVER_URL}/signup`, {
 		body: JSON.stringify(SignupData),
+		credentials: 'same-origin',
 		headers: {
-			Accept: 'application/json',
 			'Content-Type': 'application/json'
 		},
 		method: 'POST'
