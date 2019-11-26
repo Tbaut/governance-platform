@@ -1,35 +1,41 @@
-// import * as React from 'react'
-// import { useContext } from 'react'
-// import {Query} from 'react-apollo'
-// import { MeDocument, MeQuery, MeQueryVariables, useMeQuery, useMeLazyQuery } from '../generated/graphql'
 import { LoginObjectType, SignupObjectType, SignupResponseObjectType, UserDetailsContextType } from '../types'
-// import { UserDetailsContext } from '../context/UserDetailsContext'
 import parseJwt from '../util/parseJWT'
 
-export const storeAuthHeader = (auth: string) => {
-	localStorage.setItem('Authorization', 'Bearer '+auth)
+
+/**
+ * Store the JWT token in localstorage
+ * @param token the token received from the authentication header 
+ */
+export const storeAuthHeader = (token: string) => {
+	localStorage.setItem('Authorization', 'Bearer ' + token)
 }
 
+/**
+ * Get the authorization header from localstorage if any
+ * and get a new token if expired.
+ */
 export const getAuthHeader = (): string | null => {
 	let token = localStorage.getItem('Authorization') || null;
+	let isExpired = false;
 
 	if (token) {
 		const tokenPayload = parseJwt(token);
-		const isExpired = tokenPayload.exp < Date.now()/1000
-		
-		// if(isExpired){
-		// 	refreshToken();
-		// }
+		isExpired = tokenPayload.exp < Date.now() / 1000
+	}
 
-		// always refresh
-		refreshToken();
+	if (!token || isExpired) {
+		refreshToken().then(t => token = t);
 
 	}
+
 	return token
 }
 
-const refreshToken = (): void => {
-	fetch(`${process.env.REACT_APP_AUTH_SERVER_URL}/token`, {
+/**
+ * Sends a request to the auth server to get a new jwt token
+ */
+const refreshToken = async (): Promise<string | null> => {
+	const token = await fetch(`${process.env.REACT_APP_AUTH_SERVER_URL}/token`, {
 		credentials: 'same-origin',
 		headers: {
 			'Content-Type': 'application/json'
@@ -38,26 +44,32 @@ const refreshToken = (): void => {
 	})
 		.then(async (response) => {
 			if (response.status < 400 && response.ok) {
-				response.json().then((data) => {
-					console.log('new token',data.token)
+				const token = await response.json().then((data) => {
+					storeAuthHeader(data.token);
+					return data.token;
 				})
-
-				//   const token = data.token;
-				// storeAuthHeader(token);
-				// return data;
-				// });
+				return token;
 			} else {
-				const error = await response.json()
+				await response.json()
 					.then((data) => {
-						console.log('Authservice login error',data.errors);
+						console.error('Authservice login error', data.errors);
 						return data.errors;
+					}).catch(e => {
+						throw new Error(e);
 					})
-				throw new Error(error);
+				return null;
 			}
 		});
+
+	return token
 }
 
-export const login = ({ username, password } : LoginObjectType) => {
+/**
+ * Sends a request to the authentication server to login a user
+ * given the username and password
+ * @param param0 Object with username and password
+ */
+export const login = ({ username, password }: LoginObjectType) => {
 
 	return fetch(`${process.env.REACT_APP_AUTH_SERVER_URL}/login`, {
 		body: JSON.stringify({ password, username }),
@@ -70,27 +82,21 @@ export const login = ({ username, password } : LoginObjectType) => {
 		.then(async (response) => {
 			if (response.status < 400 && response.ok) {
 				return response
-				// .json().then((data) => {
-				//   const token = data.token;
-				// storeAuthHeader(token);
-				// return data;
-				// });
 			} else {
-				// console.log('res.statusText',res.statusText)
 				const error = await response.json()
 					.then((data) => {
-						console.error('Authservice login error',data.errors);
+						console.error('Authservice login error', data.errors);
 						return data.errors;
 					})
-
 				throw new Error(error);
-				//Promise.reject(
-       
-				//))
 			}
 		});
 }
 
+/**
+ * Sends a request to the authentication server to sign the user in as well as login them in.
+ * @param SignupData Object with the data required to signup
+ */
 export const signUp = (SignupData: SignupObjectType) => {
 	return fetch(`${process.env.REACT_APP_AUTH_SERVER_URL}/signup`, {
 		body: JSON.stringify(SignupData),
@@ -101,7 +107,7 @@ export const signUp = (SignupData: SignupObjectType) => {
 		method: 'POST'
 	})
 		.then((response) => {
-			if(response.status < 400 && response.ok) {
+			if (response.status < 400 && response.ok) {
 				return response
 			} else {
 				// FIXME we need to throw here and remove this ugly alert
@@ -114,15 +120,20 @@ export const signUp = (SignupData: SignupObjectType) => {
 		})
 }
 
-export  const loginUser = ({ user, token }: SignupResponseObjectType, currentUser:UserDetailsContextType) => {
+/**
+ * Store the user information in local context and call the function to store the received token
+ * @param param0 user and token answered by the auth server
+ * @param currentUser context data on the user
+ */
+export const handleLoginUser = ({ user, token }: SignupResponseObjectType, currentUser: UserDetailsContextType) => {
 	storeAuthHeader(token);
 	currentUser.setUserDetailsContextState((prevState) => {
 		return {
 			...prevState,
 			id: user.id,
 			username: user.username
-		}  
-	})       
+		}
+	})
 }
 
 // export const signOut = () => {

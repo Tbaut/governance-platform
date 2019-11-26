@@ -8,8 +8,10 @@ import './index.css';
 import App from './App';
 
 const authHeader = getAuthHeader();
+const headers = authHeader ? { 'Authorization': authHeader } : null;
+console.log('headers',headers)
 const client = new ApolloClient({
-	headers: { 'Authorization': authHeader },
+	headers,
 	uri: process.env.REACT_APP_HASURA_GRAPHQL_URL
 });
 

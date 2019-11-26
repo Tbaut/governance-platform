@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { FormControlProps } from 'react-bootstrap';
-import { signUp, loginUser } from '../../services/auth.service';
+import { signUp, handleLoginUser } from '../../services/auth.service';
 import { UserDetailsContext } from '../../context/UserDetailsContext';
 import { useHistory } from 'react-router-dom';
 
@@ -24,7 +24,7 @@ const SignupForm = (): JSX.Element => {
 			signUp({ email ,password, username })
 				.then((data) => data.json())
 				.then((data) => {
-					loginUser(data, currentUser);
+					handleLoginUser(data, currentUser);
 					// redirect to the home
 					history.push('/');
 				})

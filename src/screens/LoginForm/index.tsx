@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 import { FormControlProps } from 'react-bootstrap';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { login, loginUser } from '../../services/auth.service';
+import { login, handleLoginUser } from '../../services/auth.service';
 import { UserDetailsContext } from '../../context/UserDetailsContext';
 
 const LoginForm = (props: RouteComponentProps): JSX.Element => {
@@ -25,7 +25,7 @@ const LoginForm = (props: RouteComponentProps): JSX.Element => {
 			login({ password, username })
 				.then((data) => data.json())
 				.then((data) => {
-					loginUser(data, currentUser);
+					handleLoginUser(data, currentUser);
 					// redirect to the home
 					props.history.push('/');
 				})
