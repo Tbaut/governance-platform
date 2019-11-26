@@ -7,14 +7,14 @@ import parseJwt from '../util/parseJWT'
  * @param token the token received from the authentication header 
  */
 export const storeAuthHeader = (token: string) => {
-	localStorage.setItem('Authorization', 'Bearer ' + token)
+	localStorage.setItem('Authorization', token)
 }
 
 /**
  * Get the authorization header from localstorage if any
  * and get a new token if expired.
  */
-export const getAuthHeader = (): string | null => {
+export const getRawToken = async (): Promise<string | null> => {
 	let token = localStorage.getItem('Authorization') || null;
 	let isExpired = false;
 
@@ -24,11 +24,10 @@ export const getAuthHeader = (): string | null => {
 	}
 
 	if (!token || isExpired) {
-		refreshToken().then(t => token = t);
-
+		token = await refreshToken();
 	}
 
-	return token
+	return token;
 }
 
 /**
@@ -144,8 +143,7 @@ export const handleLoginUser = ({ user, token }: SignupResponseObjectType, curre
 // }
 
 export default {
-	// withAuth,
-	getAuthHeader,
+	getRawToken,
 	login,
 	signUp,
 	storeAuthHeader
