@@ -17,7 +17,7 @@ const CreatePost = () => {
 			cat: 2,
 			content: 'hophop',
 			title: 'piouf',
-			userId: 1
+			userId: 6
 		} })
 	}
 

@@ -1,9 +1,4 @@
-// import * as React from 'react'
-// import { useContext } from 'react'
-// import {Query} from 'react-apollo'
-// import { MeDocument, MeQuery, MeQueryVariables, useMeQuery, useMeLazyQuery } from '../generated/graphql'
 import { LoginObjectType, SignupObjectType, SignupResponseObjectType, UserDetailsContextType } from '../types'
-// import { UserDetailsContext } from '../context/UserDetailsContext'
 
 export const storeAuthHeader = (auth: string) => {
 	localStorage.setItem('Authorization', 'Bearer '+auth)
@@ -31,7 +26,6 @@ export const login = ({ username, password } : LoginObjectType) => {
 				// return data;
 				// });
 			} else {
-				// console.log('res.statusText',res.statusText)
 				const error = await response.json()
 					.then((data) => {
 						console.log('Authservice login error',data.error);
@@ -39,9 +33,6 @@ export const login = ({ username, password } : LoginObjectType) => {
 					})
 
 				throw new Error(error);
-				//Promise.reject(
-       
-				//))
 			}
 		});
 }
@@ -88,7 +79,6 @@ export  const loginUser = ({ user, token }: SignupResponseObjectType, currentUse
 // }
 
 export default {
-	// withAuth,
 	getAuthHeader,
 	login,
 	signUp,
