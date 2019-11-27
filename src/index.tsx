@@ -1,35 +1,23 @@
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from '@apollo/react-hooks';
-import { TokenRefreshLink } from 'apollo-link-token-refresh'
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloClient } from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
+import { setContext } from 'apollo-link-context';
+import { HttpLink } from 'apollo-link-http';
+import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import App from './App';
-import { HttpLink } from 'apollo-link-http';
-import { setContext } from 'apollo-link-context';
-import { ApolloLink } from 'apollo-link';
-import { storeLocalStorageToken, getLocalStorageToken } from './services/auth.service';
-import parseJwt from './util/parseJWT';
+import { getLocalStorageToken, isLocalStorageTokenValid, getRefreshedToken, storeLocalStorageToken } from './services/auth.service';
 
-const isLocalStorageTokenValid = (): boolean => {
-	let token = localStorage.getItem('Authorization') || null;
-
-	if (token) {
-		const tokenPayload = parseJwt(token);
-		return tokenPayload.exp > Date.now() / 1000
-	} else {
-		return false
-	}
-};
-
-const setAuthorizationLink = setContext((request, previousContext) => {
+const setAuthorizationLink = setContext(() => {
 	const token = getLocalStorageToken()
 	if (token) {
 		return { headers: { authorization: `Bearer ${token}` } }
 	} else {
 		return null
-	}
-		
+	}	
 });
 
 const httpLink = new HttpLink({
@@ -39,43 +27,15 @@ const httpLink = new HttpLink({
 const link = ApolloLink.from([
 	new TokenRefreshLink({
 		accessTokenField: 'token',
-		fetchAccessToken: () => {
-			console.log('fetchAccessToken')
-			return fetch(`${process.env.REACT_APP_AUTH_SERVER_URL}/token`, {
-				credentials: 'same-origin',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				method: 'POST'
-			});
-		},
+		fetchAccessToken: getRefreshedToken,
 		handleError: (err:any) => {
-			// full control over handling token fetch Error
-			console.warn('Your refresh token is invalid. Try to relogin');
+			console.warn('Your refresh token is invalid. Try to login again');
 			console.error(err);
 
-			// your custom action here
-			// user.logout();
+			// FIXME logout user and redirect to login
 		},
-		handleFetch: (accessToken: string) => {
-			console.log('handleFetch accessToken',accessToken)
-			// const accessTokenDecrypted = jwtDecode(accessToken);
-			storeLocalStorageToken(accessToken)
-		},
-		// handleResponse: (operation:any, accessTokenField:any) => response => {
-		// 	// here you can parse response, handle errors, prepare returned token to
-		// 	// further operations
-
-		// 	// returned object should be like this:
-		// 	// {
-		// 	//    access_token: 'token string here'
-		// 	// }
-		// },
-		isTokenValidOrUndefined: () => {
-			const r = isLocalStorageTokenValid()
-			console.log('is it valid?',r)
-			return r
-		}
+		handleFetch: (accessToken: string) => storeLocalStorageToken(accessToken),
+		isTokenValidOrUndefined:  isLocalStorageTokenValid
 	}),
 	setAuthorizationLink,
 	httpLink

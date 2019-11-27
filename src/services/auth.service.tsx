@@ -1,6 +1,5 @@
 import { LoginObjectType, SignupObjectType, SignupResponseObjectType, UserDetailsContextType } from '../types'
-// import parseJwt from '../util/parseJWT'
-
+import parseJwt from '../util/parseJWT';
 
 /**
  * Store the JWT token in localstorage
@@ -9,27 +8,6 @@ import { LoginObjectType, SignupObjectType, SignupResponseObjectType, UserDetail
 export const storeLocalStorageToken = (token: string) => {
 	localStorage.setItem('Authorization', token)
 }
-
-// /**
-//  * Get the freshest possible jwt token
-//  * either from localstorage if any valid token is present
-//  * or request a fresh token if expired.
-//  */
-// export const getToken = async (): Promise<string | null> => {
-// 	let token = getLocalStorageToken()
-// 	// let isExpired = false;
-
-// 	if (token) {
-// 		const tokenPayload = parseJwt(token);
-// 		isExpired = tokenPayload.exp < Date.now() / 1000
-// 	}
-
-// 	// if (!token || isExpired) {
-// 	// 	token = await refreshToken();
-// 	// }
-
-// 	return token;
-// }
 
 /**
  * Get the the jwt from localstorage
@@ -40,37 +18,34 @@ export const getLocalStorageToken = (): string|null => {
 }
 
 /**
- * Sends a request to the auth server to get a new jwt token
+ * Tells whether the jwt token stored locally
+ * is set and not expired.
  */
-export const refreshToken = async (): Promise<string | null> => {
-	const token = await fetch(`${process.env.REACT_APP_AUTH_SERVER_URL}/token`, {
+export const isLocalStorageTokenValid = (): boolean => {
+	let token = localStorage.getItem('Authorization') || null;
+
+	if (token) {
+		const tokenPayload = parseJwt(token);
+		return tokenPayload.exp > Date.now() / 1000
+	} else {
+		return false
+	}
+};
+
+/**
+ * Performs a call to the auth server
+ * in the hope to get a new jwt token.
+ */
+export const getRefreshedToken = () => (
+	fetch(`${process.env.REACT_APP_AUTH_SERVER_URL}/token`, {
 		credentials: 'same-origin',
 		headers: {
 			'Content-Type': 'application/json'
 		},
 		method: 'POST'
 	})
-		.then(async (response) => {
-			if (response.status < 400 && response.ok) {
-				const token = await response.json().then((data) => {
-					storeLocalStorageToken(data.token);
-					return data.token;
-				})
-				return token;
-			} else {
-				await response.json()
-					.then((data) => {
-						console.error('Authservice login error', data.errors);
-						return data.errors;
-					}).catch(e => {
-						throw new Error(e);
-					})
-				return null;
-			}
-		});
+)
 
-	return token
-}
 
 /**
  * Sends a request to the authentication server to login a user
@@ -150,11 +125,3 @@ export const handleLoginUser = ({ user, token }: SignupResponseObjectType, curre
 
 //   return store.clearStore()
 // }
-
-export default {
-	// getToken,
-	login,
-	signUp,
-	storeLocalStorageToken
-	// signOut,
-}
