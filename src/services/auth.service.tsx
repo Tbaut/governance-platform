@@ -11,10 +11,11 @@ export const storeAuthHeader = (token: string) => {
 }
 
 /**
- * Get the authorization header from localstorage if any
- * and get a new token if expired.
+ * Get the freshest possible jwt token
+ * either from localstorage if any valid token is present
+ * or request a fresh token if expired.
  */
-export const getRawToken = async (): Promise<string | null> => {
+export const getToken = async (): Promise<string | null> => {
 	let token = localStorage.getItem('Authorization') || null;
 	let isExpired = false;
 
@@ -143,7 +144,7 @@ export const handleLoginUser = ({ user, token }: SignupResponseObjectType, curre
 // }
 
 export default {
-	getRawToken,
+	getToken,
 	login,
 	signUp,
 	storeAuthHeader

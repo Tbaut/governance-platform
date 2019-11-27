@@ -5,7 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
 
 import { UserDetailsContext } from '../../context/UserDetailsContext'
-import { getRawToken } from '../../services/auth.service';
+import { getToken } from '../../services/auth.service';
 import parseJwt from '../../util/parseJWT'
 
 const MenuBar: React.FC = () => {
@@ -15,8 +15,7 @@ const MenuBar: React.FC = () => {
 		if (!currentUser.id){
 			// no user stored in memory
 			// check in the local storage
-			getRawToken().then((token) => {
-				console.log('tokken',token)
+			getToken().then((token) => {
 				if (token) {
 					const tokenPayload = token && parseJwt(token);
 

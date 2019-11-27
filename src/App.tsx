@@ -13,14 +13,9 @@ import MenuBar from './screens/MenuBar';
 import Post from './screens/Post';
 import SignupForm from './screens/SignupForm';
 
-// import { getRawToken } from './services/auth.service';
-// getRawToken().then((token) => {
-// 	const headers = token ? { 'Authorization': 'Bearer ' + token } : null;
-// 	console.log('headers',headers)
 const client = new ApolloClient({
 	uri: process.env.REACT_APP_HASURA_GRAPHQL_URL
 });
-// )
 
 const App = () => {
 	return (
