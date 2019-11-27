@@ -46,7 +46,6 @@ export const getRefreshedToken = () => (
 	})
 )
 
-
 /**
  * Sends a request to the authentication server to login a user
  * given the username and password
