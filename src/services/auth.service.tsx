@@ -1,40 +1,48 @@
 import { LoginObjectType, SignupObjectType, SignupResponseObjectType, UserDetailsContextType } from '../types'
-import parseJwt from '../util/parseJWT'
+// import parseJwt from '../util/parseJWT'
 
 
 /**
  * Store the JWT token in localstorage
  * @param token the token received from the authentication header 
  */
-export const storeAuthHeader = (token: string) => {
+export const storeLocalStorageToken = (token: string) => {
 	localStorage.setItem('Authorization', token)
 }
 
+// /**
+//  * Get the freshest possible jwt token
+//  * either from localstorage if any valid token is present
+//  * or request a fresh token if expired.
+//  */
+// export const getToken = async (): Promise<string | null> => {
+// 	let token = getLocalStorageToken()
+// 	// let isExpired = false;
+
+// 	if (token) {
+// 		const tokenPayload = parseJwt(token);
+// 		isExpired = tokenPayload.exp < Date.now() / 1000
+// 	}
+
+// 	// if (!token || isExpired) {
+// 	// 	token = await refreshToken();
+// 	// }
+
+// 	return token;
+// }
+
 /**
- * Get the freshest possible jwt token
- * either from localstorage if any valid token is present
- * or request a fresh token if expired.
+ * Get the the jwt from localstorage
+ * if any. It might be expired
  */
-export const getToken = async (): Promise<string | null> => {
-	let token = localStorage.getItem('Authorization') || null;
-	let isExpired = false;
-
-	if (token) {
-		const tokenPayload = parseJwt(token);
-		isExpired = tokenPayload.exp < Date.now() / 1000
-	}
-
-	if (!token || isExpired) {
-		token = await refreshToken();
-	}
-
-	return token;
+export const getLocalStorageToken = (): string|null => {
+	return localStorage.getItem('Authorization') || null;
 }
 
 /**
  * Sends a request to the auth server to get a new jwt token
  */
-const refreshToken = async (): Promise<string | null> => {
+export const refreshToken = async (): Promise<string | null> => {
 	const token = await fetch(`${process.env.REACT_APP_AUTH_SERVER_URL}/token`, {
 		credentials: 'same-origin',
 		headers: {
@@ -45,7 +53,7 @@ const refreshToken = async (): Promise<string | null> => {
 		.then(async (response) => {
 			if (response.status < 400 && response.ok) {
 				const token = await response.json().then((data) => {
-					storeAuthHeader(data.token);
+					storeLocalStorageToken(data.token);
 					return data.token;
 				})
 				return token;
@@ -126,7 +134,7 @@ export const signUp = (SignupData: SignupObjectType) => {
  * @param currentUser context data on the user
  */
 export const handleLoginUser = ({ user, token }: SignupResponseObjectType, currentUser: UserDetailsContextType) => {
-	storeAuthHeader(token);
+	storeLocalStorageToken(token);
 	currentUser.setUserDetailsContextState((prevState) => {
 		return {
 			...prevState,
@@ -144,9 +152,9 @@ export const handleLoginUser = ({ user, token }: SignupResponseObjectType, curre
 // }
 
 export default {
-	getToken,
+	// getToken,
 	login,
 	signUp,
-	storeAuthHeader
+	storeLocalStorageToken
 	// signOut,
 }

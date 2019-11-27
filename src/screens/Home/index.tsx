@@ -1,24 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { useLatestPostsQuery } from '../../generated/graphql';
 import Home from './Home';
-import { getToken } from '../../services/auth.service';
 
 const HomeContainer = () => {
-	const [token, setToken] = useState<string|null>(null)
 
-	useEffect(() => {
-		getToken().then(t => setToken(t))
-	},[])
-
-	const { data, error, loading } = useLatestPostsQuery({ 
-		context: {
-			headers: 
-				token ? {
-					'authorization': 'Bearer ' + token
-				} : null
-		} 
-	});
+	const { data, error, loading } = useLatestPostsQuery();
 
 	if (loading) {
 		return <div>Loading...</div>;

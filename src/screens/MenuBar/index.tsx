@@ -5,7 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
 
 import { UserDetailsContext } from '../../context/UserDetailsContext'
-import { getToken } from '../../services/auth.service';
+import { getLocalStorageToken } from '../../services/auth.service';
 import parseJwt from '../../util/parseJWT'
 
 const MenuBar: React.FC = () => {
@@ -15,26 +15,25 @@ const MenuBar: React.FC = () => {
 		if (!currentUser.id){
 			// no user stored in memory
 			// check in the local storage
-			getToken().then((token) => {
-				if (token) {
-					const tokenPayload = token && parseJwt(token);
+			const token = getLocalStorageToken()
+			if (token) {
+				const tokenPayload = token && parseJwt(token);
 
-					if (tokenPayload){
-						const id = tokenPayload && tokenPayload['https://hasura.io/jwt/claims']['x-hasura-user-id']
-						const username =  tokenPayload.name
-		
-						if (id && username){
-							currentUser.setUserDetailsContextState((prevState) => {
-								return {
-									...prevState,
-									id,
-									username
-								}
-							})
-						}
+				if (tokenPayload){
+					const id = tokenPayload && tokenPayload['https://hasura.io/jwt/claims']['x-hasura-user-id']
+					const username =  tokenPayload.name
+	
+					if (id && username){
+						currentUser.setUserDetailsContextState((prevState) => {
+							return {
+								...prevState,
+								id,
+								username
+							}
+						})
 					}
 				}
-			})
+			}
 		}
 	},[currentUser]);
 
