@@ -10,7 +10,6 @@
     "@types/react-bootstrap": "^0.32.20",
     "@types/react-dom": "16.9.2",
     "@types/styled-components": "^4.1.19",
-    "apollo-boost": "^0.4.4",
     "apollo-client": "^2.6.4",
     "apollo-link-context": "^1.0.19",
     "apollo-link-token-refresh": "^0.2.7",
