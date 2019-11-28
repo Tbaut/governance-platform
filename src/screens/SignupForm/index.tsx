@@ -79,7 +79,7 @@ const SignupForm = (): JSX.Element => {
 	return (
 		<Container>
 			<Row>
-				<Col xs={0} sm={2} md={2} lg={2}></Col>
+				<Col xs={0} sm={0} md={2} lg={2}></Col>
 				<Col xs={12} sm={12} md={8} lg={8}>
 					<Form>
 						<h3>Sign Up</h3>
@@ -97,7 +97,7 @@ const SignupForm = (): JSX.Element => {
 								type="email"
 							/>
 							<Form.Text className="text-muted">
-								We&#39;ll never share your email with anyone else.
+								We&apos;ll never share your email with anyone else.
 							</Form.Text>
 						</Form.Group>
 
