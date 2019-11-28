@@ -117,7 +117,7 @@ const LoginForm = (props: RouteComponentProps): JSX.Element => {
 							</div>
 						</Form>
 					</Col>
-					<Col xs={12} sm={12} md={2} lg={2}></Col>
+					<Col xs={0} sm={0} md={2} lg={2}></Col>
 				</Row>
 			</Container>
 		</>
