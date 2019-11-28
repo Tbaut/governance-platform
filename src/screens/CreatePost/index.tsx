@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, FC } from 'react';
 import Button from 'react-bootstrap/Button';
 import { FormControlProps } from 'react-bootstrap/FormControl';
 import Row from 'react-bootstrap/Row';
@@ -8,8 +8,13 @@ import Form from 'react-bootstrap/Form';
 import { useCreatePostMutation, useCategoriesQuery } from '../../generated/graphql';
 import { UserDetailsContext } from '../../context/UserDetailsContext'
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import styled from 'styled-components'
 
-const CreatePost = () => {
+interface Props {
+	className?: string
+}
+
+const CreatePost = ({ className }: Props) => {
 	const [title, setTitle] = useState<string | undefined>('');
 	const [content, setContent] = useState<string | undefined>('');
 	const [selectedCategory, setSetlectedCategorie] = useState<number | null>(null);
@@ -33,6 +38,17 @@ const CreatePost = () => {
 	const onTitleChange = (event: React.FormEvent<FormControlProps>) => setTitle(event.currentTarget.value);
 	const onContentChange = (event: React.FormEvent<FormControlProps>) => setContent(event.currentTarget.value);
 
+	const renderCategories = () => {
+		if (!catData || !catData.categories) return null
+		
+		return (
+			<ButtonGroup aria-label="Categorie" size="sm">
+				{ catData.categories.map(({ id, name } : {name: string, id:number}) => {
+					return <Button key={id} variant="secondary" onClick={() => setSetlectedCategorie(id)}>{name}</Button>
+				})}
+			</ButtonGroup>			
+		);
+	}
 	if (loading || catLoading) {
 		return <div>Loading...</div>;
 	}
@@ -41,14 +57,8 @@ const CreatePost = () => {
 		return <div>ERROR</div>;
 	}
 
-	console.log('data',data);
-	console.log('catData', catData);
-	console.log('selectedCat', selectedCategory)
-
-	if (!catData) return <div>bla</div>
-
 	return (
-		<Row>
+		<Row className={className}>
 			<Col xs={0} sm={0} md={2} lg={2}/>
 			<Col xs={12} sm={12} md={8} lg={8}>
 				<Form>
@@ -72,17 +82,8 @@ const CreatePost = () => {
 							rows="3"
 						/>
 					</Form.Group>
-					<div style={{
-						alignItems: 'center',
-						display: 'flex',
-						flexDirection: 'column',
-						justifyContent: 'center'
-					}}> 					
-						<ButtonGroup aria-label="Categorie">
-							{ catData.categories.map(({ id, name } : {name: string, id:number}) => {
-								return <Button key={id} variant="secondary" onClick={() => setSetlectedCategorie(id)}>{name}</Button>
-							})}
-						</ButtonGroup>
+					{renderCategories()}
+					<div className={'mainButtonContainer'}> 
 						<Button
 							onClick={handleSend}
 							type='submit'
@@ -98,4 +99,14 @@ const CreatePost = () => {
 	);
 };
 
-export default CreatePost;
+export default styled(CreatePost)`
+	color: 'red'
+
+	.mainButtonContainer {
+		alignItems: 'center',
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'center'
+	}
+	
+`

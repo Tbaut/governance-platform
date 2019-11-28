@@ -14,45 +14,49 @@ interface Props {
 }
 
 const Container = styled.div`
-  .Home__item {
-    margin: 0 0 0.625rem 0;
-    border: 1px solid #EEE;
-  }
+	Button.newPostButton {
+		margin-bottom: 10px
+	}
 
-  .Home__item:hover {
-    border: 1px solid #BBB;
-    text-decoration: none;
-  }
+	.Home__item {
+		margin: 0 0 0.625rem 0;
+		border: 1px solid #EEE;
+	}
 
-  .Home__item a:hover {
-    text-decoration: none;
-  }
+	.Home__item:hover {
+		border: 1px solid #BBB;
+		text-decoration: none;
+	}
 
-  .info_box {
-    padding: 1.25rem 1.875rem;
-    background-color: #FFF;
-    margin: 0 0 0.625rem 0;
-    border: 1px solid #EEE;
-  }
+	.Home__item a:hover {
+	tex	t-decoration: none;
+	}
 
-  .info_text {
-    font-size: 0.875rem;
-    h6 {
-      font-size: 0.875rem;
-      margin-top: 1rem;
-    }
-  }
+	.info_box {
+		padding: 1.25rem 1.875rem;
+		background-color: #FFF;
+		margin: 0 0 0.625rem 0;
+		border: 1px solid #EEE;
+	}
 
-  .ex_link {
-    padding-top: 0.625rem;
-    a {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: #EB5757;
-      &:hover {
-        border-bottom: 1px solid #EB5757;
-      }
-    } 
+	.info_text {
+		fo	nt-size: 0.875rem;
+		h6 {
+			font-size: 0.875rem;
+			margin-top: 1rem;
+		}
+	}
+
+	.ex_link {
+		padding-top: 0.625rem;
+		a {
+			font-size: 0.75rem;
+			font-weight: 500;
+			color: #EB5757;
+			&:hover {
+			border-bottom: 1px solid #EB5757;
+		}
+	} 
   }
 
   @media (max-width: 576px) {
@@ -75,7 +79,6 @@ const Home = ({ data }: Props) => {
 
 	return ( <Container className='Home'>
 		<h3>Latest Discussions</h3>
-		<Button onClick={handleCreatPost}>New Post</Button>
 		<Row>
 			<Col sm={12} md={6} lg={7}>
 				<ul className='Home__list'>
@@ -100,6 +103,7 @@ const Home = ({ data }: Props) => {
 				</ul>
 			</Col>
 			<Col md={6} lg={5}>
+				<Button className={'newPostButton'} onClick={handleCreatPost}>New Post</Button>
 				<div className='info_box'>
 					<h5>Hello</h5>
 					<div className='info_text'>Discuss all things Polkadot governance, signal your intentions, back on-chain proposals and vote on referenda.</div>

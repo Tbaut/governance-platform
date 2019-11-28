@@ -2551,7 +2551,7 @@ export type CategoriesLazyQueryHookResult = ReturnType<typeof useCategoriesLazyQ
 export type CategoriesQueryResult = ApolloReactCommon.QueryResult<CategoriesQuery, CategoriesQueryVariables>;
 export const LatestPostsDocument = gql`
     query LatestPosts {
-  posts {
+  posts(order_by: {creation_date: desc}) {
     id
     title
     author {
