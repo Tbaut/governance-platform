@@ -2370,6 +2370,22 @@ export type CreatePostMutation = (
   )> }
 );
 
+export type CatfragmentFragment = (
+  { __typename?: 'categories' }
+  & Pick<Categories, 'id' | 'name'>
+);
+
+export type CategoriesQueryVariables = {};
+
+
+export type CategoriesQuery = (
+  { __typename?: 'query_root' }
+  & { categories: Array<(
+    { __typename?: 'categories' }
+    & CatfragmentFragment
+  )> }
+);
+
 export type LatestPostsQueryVariables = {};
 
 
@@ -2425,6 +2441,12 @@ export const UserFragmentDoc = gql`
   picture
 }
     `;
+export const CatfragmentFragmentDoc = gql`
+    fragment catfragment on categories {
+  id
+  name
+}
+    `;
 export const CreatePostDocument = gql`
     mutation createPost($userId: Int!, $content: String!, $cat: Int!, $title: String!) {
   __typename
@@ -2478,6 +2500,55 @@ export function useCreatePostMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type CreatePostMutationHookResult = ReturnType<typeof useCreatePostMutation>;
 export type CreatePostMutationResult = ApolloReactCommon.MutationResult<CreatePostMutation>;
 export type CreatePostMutationOptions = ApolloReactCommon.BaseMutationOptions<CreatePostMutation, CreatePostMutationVariables>;
+export const CategoriesDocument = gql`
+    query Categories {
+  categories {
+    ...catfragment
+  }
+}
+    ${CatfragmentFragmentDoc}`;
+export type CategoriesComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<CategoriesQuery, CategoriesQueryVariables>, 'query'>;
+
+    export const CategoriesComponent = (props: CategoriesComponentProps) => (
+      <ApolloReactComponents.Query<CategoriesQuery, CategoriesQueryVariables> query={CategoriesDocument} {...props} />
+    );
+    
+export type CategoriesProps<TChildProps = {}> = ApolloReactHoc.DataProps<CategoriesQuery, CategoriesQueryVariables> & TChildProps;
+export function withCategories<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  CategoriesQuery,
+  CategoriesQueryVariables,
+  CategoriesProps<TChildProps>>) {
+    return ApolloReactHoc.withQuery<TProps, CategoriesQuery, CategoriesQueryVariables, CategoriesProps<TChildProps>>(CategoriesDocument, {
+      alias: 'categories',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useCategoriesQuery__
+ *
+ * To run a query within a React component, call `useCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCategoriesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+        return ApolloReactHooks.useQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, baseOptions);
+      }
+export function useCategoriesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, baseOptions);
+        }
+export type CategoriesQueryHookResult = ReturnType<typeof useCategoriesQuery>;
+export type CategoriesLazyQueryHookResult = ReturnType<typeof useCategoriesLazyQuery>;
+export type CategoriesQueryResult = ApolloReactCommon.QueryResult<CategoriesQuery, CategoriesQueryVariables>;
 export const LatestPostsDocument = gql`
     query LatestPosts {
   posts {

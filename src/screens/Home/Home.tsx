@@ -70,7 +70,7 @@ const Home = ({ data }: Props) => {
 	const history = useHistory();
 
 	const handleCreatPost = () => {
-		history.push('/post/create')
+		history.push('/temp-post/create')
 	};
 
 	return ( <Container className='Home'>
