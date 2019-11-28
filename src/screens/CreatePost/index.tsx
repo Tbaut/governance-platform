@@ -1,30 +1,34 @@
-import React, { useState, useContext, FC } from 'react';
+import React, { useState, useContext } from 'react';
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { FormControlProps } from 'react-bootstrap/FormControl';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import Spinner from 'react-bootstrap/Spinner';
+import { useHistory } from 'react-router-dom';
+import styled from 'styled-components'
 
 import { useCreatePostMutation, useCategoriesQuery } from '../../generated/graphql';
 import { UserDetailsContext } from '../../context/UserDetailsContext'
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import styled from 'styled-components'
 
 interface Props {
 	className?: string
 }
 
-const CreatePost = ({ className }: Props) => {
+const CreatePost = ({ className }:Props) => {
 	const [title, setTitle] = useState<string | undefined>('');
 	const [content, setContent] = useState<string | undefined>('');
 	const [selectedCategory, setSetlectedCategorie] = useState<number | null>(null);
 	const currentUser = useContext(UserDetailsContext);
-	const { data: catData, loading: catLoading, error: catError } = useCategoriesQuery()
+	const { data: catData, error: catError } = useCategoriesQuery()
 	const [createPostMutation, { data, loading, error }] = useCreatePostMutation();
-	// const [errors, setErrors] = useState<Array<string>>([])
+	const [isSending, setIsSending] = useState(false)
+	const history = useHistory();
 
 	const handleSend = () => {
 		if (currentUser.id && title && content && selectedCategory){
+			setIsSending(true);
 			createPostMutation({ variables: {
 				cat: selectedCategory,
 				content,
@@ -49,17 +53,21 @@ const CreatePost = ({ className }: Props) => {
 			</ButtonGroup>			
 		);
 	}
-	if (loading || catLoading) {
-		return <div>Loading...</div>;
+
+	if (data && data.insert_posts &&  data.insert_posts.affected_rows > 0) history.push('/')
+
+	if (loading) {
+		return <Spinner animation="grow" />;
 	}
 
 	if (error || catError) {
-		return <div>ERROR</div>;
+		error && console.error('Post creatioin error',error)
+		catError && console.error('Categories loading error',error)
 	}
 
 	return (
 		<Row className={className}>
-			<Col xs={0} sm={0} md={2} lg={2}/>
+			<Col className={'bla'} xs={0} sm={0} md={2} lg={2}/>
 			<Col xs={12} sm={12} md={8} lg={8}>
 				<Form>
 					<h3>New Post</h3>
@@ -83,13 +91,14 @@ const CreatePost = ({ className }: Props) => {
 						/>
 					</Form.Group>
 					{renderCategories()}
-					<div className={'mainButtonContainer'}> 
+					<div className={'mainButonContainer'}> 
 						<Button
 							onClick={handleSend}
+							disabled={isSending}
 							type='submit'
 							variant='primary'
 						>
-							Create
+							{isSending ? 'Creating...' : 'Create'}
 						</Button>
 					</div>
 				</Form>
@@ -100,13 +109,10 @@ const CreatePost = ({ className }: Props) => {
 };
 
 export default styled(CreatePost)`
-	color: 'red'
-
-	.mainButtonContainer {
-		alignItems: 'center',
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'center'
+	.mainButonContainer{
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
 	}
-	
 `
