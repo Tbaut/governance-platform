@@ -2,6 +2,7 @@ import React from 'react';
 import Container from 'react-bootstrap/Container'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
+import { GlobalStyle } from './components/GlobalStyle'
 import { UserDetailsProvider } from './context/UserDetailsContext';
 import CreatePost from './screens/CreatePost';
 import Home from './screens/Home';
@@ -10,34 +11,35 @@ import MenuBar from './screens/MenuBar';
 import Post from './screens/Post';
 import SignupForm from './screens/SignupForm';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 const App = () => {
 	return (
-		<Router>
-			<UserDetailsProvider>
-				<MenuBar/>
-				<Container fluid={true}>
-					<Switch>
-						<Route exact path="/">
-							<Home/>
-						</Route>
-						<Route path="/login">
-							<LoginForm/>
-						</Route>
-						<Route path="/post/create" >
-							<CreatePost/>
-						</Route>
-						<Route exact path="/posts/:id" >
-							<Post/>
-						</Route>
-						<Route path="/signup">
-							<SignupForm/>
-						</Route>
-					</Switch>
-				</Container>
-			</UserDetailsProvider>
-		</Router>
+		<>
+			<GlobalStyle />
+			<Router>
+				<UserDetailsProvider>
+					<MenuBar/>
+					<Container fluid={true}>
+						<Switch>
+							<Route exact path="/">
+								<Home/>
+							</Route>
+							<Route path="/temp-login">
+								<LoginForm/>
+							</Route>
+							<Route path="/temp-post/create" >
+								<CreatePost/>
+							</Route>
+							<Route exact path="/temp-post/:id" >
+								<Post/>
+							</Route>
+							<Route path="/temp-signup">
+								<SignupForm/>
+							</Route>
+						</Switch>
+					</Container>
+				</UserDetailsProvider>
+			</Router>
+		</>
 	);
 };
 
